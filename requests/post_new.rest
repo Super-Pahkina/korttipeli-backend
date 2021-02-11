@@ -1,0 +1,27 @@
+POST http://localhost:3001/api/elintarvikkeet HTTP/1.1
+Content-Type: application/json
+
+{
+"id": 33124,
+"type": "",
+"code": "FOOD",
+"name": {
+"fi": "Soijajuoma, rainbow, kalsiumia ja vitamiineja",
+"sv": "Sojadryck med kalcium och vitaminer, rainbow",
+"en": "Soya Drink Calcium, Vitamins, Rainbow",
+"la": ""
+},
+"salt": 102.014156237442,
+"alcohol": 0,
+"energyKcal": 44.75757442999235,
+"fat": 1.79280014450643,
+"protein": 3.228750128299,
+"carbohydrate": 3.2247000935629,
+"organicAcids": 0,
+"saturatedFat": 0.272040414878224,
+"sugar": 2.79270005923063,
+"sugarAlcohol": 0,
+"fiber": 1.41300003898144,
+"energy": 187.346255049062
+    
+}

@@ -2,7 +2,10 @@ const express = require('express')
 const app = express()
 
 app.use(express.json()) // saadaan lähetettyä dataa bodyssä
-const fetch = require('node-fetch') // saadaan dataa apista
+const fetch = require('node-fetch') // saadaan dataa apista fetchillä
+const fetchAbsolute = require('fetch-absolute') // apin toimintaan, että polku toimii
+
+//käynistyy nykyään npm run dev
 
 let elintarvikkeet = [
     {
@@ -438,8 +441,34 @@ const makeIndex = () => {
     return index
 }
 
-const fetchData = () => {
-    let elint = [] //yksi elintarvike haetaan APISTA
+
+let elint = []
+
+//const url = `https://fineli.fi/fineli/api/v1/foods?q=${index}`
+//const url = "https://fineli.fi/fineli/api/v1/foods?q=1"
+
+const fetchApi = fetchAbsolute(fetch)("https://fineli.fi");
+
+const fetchData = async () => {
+    let index = makeIndex()
+    try {
+        let response = await fetchApi(`/fineli/api/v1/foods?q=${index}`)
+        const json = await response.json()
+        elint = [...json]
+        console.log("ELINT FETCHISSÄ", elint)
+
+    } catch (error) {
+        console.log(error)
+    }
+
+}
+
+fetchData()
+console.log("ELINT fetchin ulkona", elint)
+
+
+/*const fetchData = () => {
+    //let elint = [] //yksi elintarvike haetaan APISTA
     const index = 1
     console.log("RESULT INDEX", index)
     const url = `https://fineli.fi/fineli/api/v1/foods?q=${index}`;
@@ -448,21 +477,32 @@ const fetchData = () => {
         .then(data => {
             //console.log("PITUUS", data.length)
             console.log("DATA FETCHISSÄ", data)
-            elint = data
+            elint = [...data]
             //console.log("ELINT", elint)
             //setTimeout(data, 2000)
             console.log("ELINT FETCHISSÄ", elint)
             //console.log("ELINT ENNEN RETURNIA", elint)
-            return elint.json()
+            //return elint.json()
+            tulostaElintulkona()
         })
         .catch(err => console.log(err))
+    //return elint
+}*/
 
-        return elint
+/*const tulostaElintulkona = () => {
+    fetchData()
+    while (elint.length == 0) {
+        console.log("ELINT ulkona ", elint)
+    }
+
 
 }
+tulostaElintulkona()*/
 
-let kissa = fetchData()
-.then(console.log("KISSA", kissa))
+
+
+//let kissa = fetchData()
+//.then(console.log("KISSA", kissa))
 
 /*const luuppaaKunnesIndeksiSaaVastauksen = () => {
 

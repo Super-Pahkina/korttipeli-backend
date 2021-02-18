@@ -13,6 +13,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "fetch-absolute": "^1.0.0",
+    "mongoose": "^5.11.17",
     "node-fetch": "^2.6.1"
   },
   "devDependencies": {

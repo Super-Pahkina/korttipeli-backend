@@ -5,7 +5,7 @@ app.use(express.json()) // saadaan lähetettyä dataa bodyssä
 const fetch = require('node-fetch') // saadaan dataa apista fetchillä
 const fetchAbsolute = require('fetch-absolute') // apin toimintaan, että polku toimii
 
-const { response } = require('express')
+const { response, request } = require('express')
 const id_lista = require('./api_idt')
 const Elintarvike = require('./mongo')
 //käynistyy nykyään npm run dev
@@ -16,9 +16,6 @@ const Elintarvike = require('./mongo')
     index = Math.round(Math.random() * biggest)
     return index
 }*/
-
-//const url = `https://fineli.fi/fineli/api/v1/foods?q=${index}`
-//const url = "https://fineli.fi/fineli/api/v1/foods?q=1"
 
 const makeElintarvikeAndSaveToDb = async (json_objekti) => {
     // teke scheman mukaisen esityksen ja tallentaa tietokantaan
@@ -41,6 +38,29 @@ const makeElintarvikeAndSaveToDb = async (json_objekti) => {
 
 }
 
+
+
+app.get('/api/elintarvikkeet/random', (request, response) => {
+    const random_int = Math.floor(Math.random() * 180)
+    const haettava = id_lista[random_int]
+    console.log("HAETTAVA", haettava)
+    Elintarvike.find({ "api_id": `${haettava}`})
+        .then(elintarvike => {
+            if (elintarvike) {
+                response.json(elintarvike)
+            } else {
+                response.status(404).end()
+            }
+            //response.json(elintarvike)
+            console.log(elintarvike)
+        })
+        .catch(error => {
+            console.log(error)
+            response.status(500).end
+
+        })
+})
+
 const fetchApi = fetchAbsolute(fetch)("https://fineli.fi");
 
 const fetchData = async () => {
@@ -53,19 +73,21 @@ const fetchData = async () => {
             //await makeElintarvikeAndSaveToDb(json)
 
             for (let ii = 0; ii < json.length; ii++) {
-                console.log("NAME", json[ii].name.fi)
-                console.log("FAT", typeof (json[ii].fat))
+                //console.log("NAME", json[ii].name.fi)
+                //console.log("FAT", typeof (json[ii].fat))
                 await makeElintarvikeAndSaveToDb(json[ii])
+
             }
         }
-        console.log("ELINT pituus", elintarvikkeet_api.length) // tää vaan debug
+        //console.log("ELINT pituus", elintarvikkeet_api.length) // tää vaan debug
     } catch (error) {
         console.log(error)
     }
 
 }
 
-fetchData()
+//fetchData()
+//getRandomElintarvike()
 
 //tarvitaanks näitä mitään paitsi yhden ja kaikkien haku?? pitäisko nääkin olla async
 
@@ -92,39 +114,20 @@ app.get('/api/elintarvikkeet/:id', (request, response) => {
             console.log(error)
             response.status(500).end
         })
-    /*const id = Number(request.params.id)
-    const elintarvike = elintarvikkeet.find(elintarvike => elintarvike.id === id)
-
-    if (elintarvike) {
-        response.json(elintarvike)
-    } else {
-        response.status(404).end()
-        // lisää tähän haku netistä ???
-    }*/
 })
 
-/*app.delete('/api/notes/:id', (request, response) => {
-const id = Number(request.params.id)
-notes = notes.filter(note => note.id !== id)
-
-response.status(204).end()
+/*app.get('/api/elintarvikkeet/:api_id', (request, response) => {
+    Elintarvike.find({api_id: })  //db.collection.find( { qty: { $gt: 4 } } )
 })*/
 
-app.post('/api/elintarvikkeet', (request, response) => {
 
-    //luodaan elintarvikkeelle id
-    /*const maxId = elintarvikkeet.length > 0
-        ? Math.max(...elintarvikkeet.map(e => e.id))
-        : 0*/
+/*app.post('/api/elintarvikkeet', (request, response) => {
 
     const elintarvike = request.body
     elintarvike.id = maxId + 1
-
     elintarvikkeet = elintarvikkeet.concat(elintarvike)
-    //console.log(elintarvike)
-
     response.json(elintarvike)
-})
+})*/
 
 const port = 3001
 app.listen(port)

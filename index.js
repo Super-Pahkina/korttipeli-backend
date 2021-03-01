@@ -54,7 +54,7 @@ const fetchData = async () => {
 
 }
 
-fetchData()
+//fetchData()
 
 //tarvitaanks näitä mitään paitsi yhden ja kaikkien haku?? pitäisko nääkin olla async
 
@@ -83,10 +83,11 @@ app.get('/api/elintarvikkeet/:id', (request, response) => {
         })
 })
 
-app.get('/api/elintarvikkeet/random', (request, response) => {
+app.get('/random', async (request, response) => {
     //miten ei tule samaa korttia uudestaan
-    const random_int = Math.floor(Math.random() * 180)
-    const haettava = id_lista[random_int]
+    
+    const random_int = Math.floor(Math.random() * await Elintarvike.collection.count())
+    const haettava = id_lista[random_int] //tää meidän listalta
     Elintarvike.find({ "api_id": `${haettava}` })
         .then(elintarvike => {
             if (elintarvike) {

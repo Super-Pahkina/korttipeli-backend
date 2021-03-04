@@ -83,23 +83,37 @@ app.get('/api/elintarvikkeet/:id', (request, response) => {
         })
 })
 
+
+// get one random card
 app.get('/random', async (request, response) => {
-    //miten ei tule samaa korttia uudestaan
-    
     const random_int = Math.floor(Math.random() * await Elintarvike.collection.count())
     const haettava = id_lista[random_int] //tää meidän listalta
-    Elintarvike.find({ "api_id": `${haettava}` })
-        .then(elintarvike => {
-            if (elintarvike) {
-                response.json(elintarvike)
-            } else {
-                response.status(404).end()
-            }
-        })
-        .catch(error => {
-            console.log(error)
-            response.status(500).end
-        })
+    try {
+        const elintarvike = await Elintarvike.find({ "api_id": `${haettava}` })
+        response.json(elintarvike)
+    } catch (error) {
+        console.log(error)
+
+    }
+})
+
+function checkIfDuplicateExists(w) {
+    return new Set(w).size !== w.length
+}
+
+// get x amount of random cards
+app.get('/howmany/:number', async (request, response) => {
+    try {
+        let is_duplicates = true
+        while (is_duplicates) {
+            cards = await Elintarvike.aggregate([{ $sample: { size: parseInt(request.params.number) } }])
+            is_duplicates = checkIfDuplicateExists(cards)
+        }
+        response.json(cards)
+    } catch (error) {
+        console.log("ERROR", error)
+    }
+
 })
 
 const port = 3001

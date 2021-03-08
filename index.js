@@ -5,6 +5,9 @@ app.use(express.json()) // saadaan lähetettyä dataa bodyssä
 const fetch = require('node-fetch') // saadaan dataa apista fetchillä
 const fetchAbsolute = require('fetch-absolute') // apin toimintaan, että polku toimii
 
+const cors = require('cors')
+app.use(cors()) // jotta saadaan tarjottua dataa eri origineista tuleviin pyyntöihin
+
 const { response, request } = require('express')
 const id_lista = require('./api_idt')
 const Elintarvike = require('./mongo')

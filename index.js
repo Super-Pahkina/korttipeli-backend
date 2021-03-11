@@ -2,17 +2,22 @@ const express = require('express')
 const app = express()
 
 app.use(express.json()) // saadaan lähetettyä dataa bodyssä
+
 const fetch = require('node-fetch') // saadaan dataa apista fetchillä
-const fetchAbsolute = require('fetch-absolute') // apin toimintaan, että polku toimii
+
+const fetchAbsolute = require('fetch-absolute') 
+const fetchApi = fetchAbsolute(fetch)("https://fineli.fi") // apin toimintaan, että polku toimii
 
 const cors = require('cors')
-app.use(cors()) // jotta saadaan tarjottua dataa eri origineista tuleviin pyyntöihin
+app.use(cors()) // saadaan tarjottua dataa eri lokaatioissa toimiviin sovelluksiin
 
-const { response, request } = require('express')
-const id_lista = require('./api_idt')
-const Elintarvike = require('./mongo')
-const { count } = require('./mongo')
-//käynistyy nykyään npm run dev
+const id_lista = require('./api_idt') // lista, jossa Finelin elintarvike id:t
+const Elintarvike = require('./mongo') // eri tiedostossa oleva Elintarvike-olion määrittely. Kuvaus, miten tietoa tallennetaan tietokantaan.
+const { count } = require('./mongo') // ominaisuus
+
+// käynnistä komennolla npm run dev, jotta päästään hyödyntämään nodemonia kehityksessä
+
+// tarkoitus on pilkkoa tämä tiedosto useampaan pienempään js-tiedostoon kehityksen edetessä
 
 const makeElintarvikeAndSaveToDb = async (json_objekti) => {
     // teke scheman mukaisen esityksen ja tallentaa tietokantaan
@@ -32,17 +37,12 @@ const makeElintarvikeAndSaveToDb = async (json_objekti) => {
     } catch (error) {
         console.log(error)
     }
-
 }
 
-//hakee datan finelistä ja tallentaa mongodbseen
-const fetchApi = fetchAbsolute(fetch)("https://fineli.fi");
-
+// hakee datan finelistä ja tallentaa mongodbseen
 const fetchData = async () => {
     try {
-
-        let count = await Elintarvike.collection.count() // alkaa tallentamaan oikeasta indeksistä
-
+        let count = await Elintarvike.collection.count() // tarkastaa MongoDB:n dokumenttien määrän
         for (let i = count; i < id_lista.length; i++) {
             let response = await fetchApi(`/fineli/api/v1/foods?q=${id_lista[i]}`)
             const json = await response.json()
@@ -54,23 +54,22 @@ const fetchData = async () => {
     } catch (error) {
         console.log(error)
     }
-
 }
+// fetchData kommentoituna, koska koko Finelin data on tallennettu MongoDB:seen. 
+// Funkiota ei kutsuta tällä hetkellä, mutta tallennettuna siltä varalta, että haluamme päivittää dataa.
+// fetchData()
 
-//fetchData()
 
-//tarvitaanks näitä mitään paitsi yhden ja kaikkien haku?? pitäisko nääkin olla async
+// backendin tarjoama REST-rajapinta
 
-app.get('/', (req, res) => {
-    res.send('<h1>Hello World!</h1>')
-})
-
+// palauttaa kaikki elintarvikkeet (ei tarvita tällä hetkellä, poistetaan tai muutetaan asynciksi)
 app.get('/api/elintarvikkeet', (request, response) => {
     Elintarvike.find({}).then(elintarvikkeet => {
         response.json(elintarvikkeet)
     })
 })
 
+// palauttaa elintarvikeen, MongoDB-id:n perusteella (ei tarvita tällä hetkellä, poistetaan tai muutetaan asynciksi)
 app.get('/api/elintarvikkeet/:id', (request, response) => {
     Elintarvike.findById(request.params.id)
         .then(elint => {
@@ -87,24 +86,24 @@ app.get('/api/elintarvikkeet/:id', (request, response) => {
 })
 
 
-// get one random card
+// palauttaa yhden sattumanvaraisen elintarvikkeen
 app.get('/random', async (request, response) => {
     const random_int = Math.floor(Math.random() * await Elintarvike.collection.count())
-    const haettava = id_lista[random_int] //tää meidän listalta
+    const haettava = id_lista[random_int]
     try {
         const elintarvike = await Elintarvike.find({ "api_id": `${haettava}` })
         response.json(elintarvike)
     } catch (error) {
         console.log(error)
-
     }
 })
 
+// tarkastaa ettei randomoidussa elintarvikelistassa ole duplikaatteja
 function checkIfDuplicateExists(w) {
     return new Set(w).size !== w.length
 }
 
-// get x amount of random cards
+// palauttaa halutun määrän satunnaisia elintarvikkeita
 app.get('/howmany/:number', async (request, response) => {
     try {
         let is_duplicates = true
@@ -116,7 +115,6 @@ app.get('/howmany/:number', async (request, response) => {
     } catch (error) {
         console.log("ERROR", error)
     }
-
 })
 
 const port = 3001

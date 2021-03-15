@@ -5,7 +5,7 @@ app.use(express.json()) // saadaan lähetettyä dataa bodyssä
 
 const fetch = require('node-fetch') // saadaan dataa apista fetchillä
 
-const fetchAbsolute = require('fetch-absolute') 
+const fetchAbsolute = require('fetch-absolute')
 const fetchApi = fetchAbsolute(fetch)("https://fineli.fi") // apin toimintaan, että polku toimii
 
 const cors = require('cors')
@@ -99,9 +99,11 @@ app.get('/random', async (request, response) => {
 })
 
 // tarkastaa ettei randomoidussa elintarvikelistassa ole duplikaatteja
-function checkIfDuplicateExists(w) {
-    return new Set(w).size !== w.length
+function checkIfDuplicateExists(array) {
+    return new Set(array.map(item => item["name_fi"])).size !== array.length
+    //return new Set(w).size !== w.length
 }
+
 
 // palauttaa halutun määrän satunnaisia elintarvikkeita
 app.get('/howmany/:number', async (request, response) => {

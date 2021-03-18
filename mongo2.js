@@ -1,10 +1,10 @@
-/*const mongoose = require('mongoose')
+const mongoose = require('mongoose')
 const password_file = require('./salasanat')
 const password = password_file.password
 //tässä filussa tietokantahommelit
 
 const url =
-  `mongodb+srv://korttipeli:${password}@korttipeli.utv91.mongodb.net/elintarvikedata?retryWrites=true&w=majority`
+  `mongodb+srv://korttipeli:${password}@korttipeli.utv91.mongodb.net/elintarvikedata_laajennettu?retryWrites=true&w=majority`
 
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
   .then(result => {
@@ -23,9 +23,11 @@ const elintarvikeSchema = new mongoose.Schema({
   carbohydrate: Number,
   fiber: Number,
   sugar: Number,
-  salt: Number
+  salt: Number,
+  ingredient_class: String,
+  special_diets: [{type: String}]
 
 })
 
-const Elintarvike = mongoose.model('Elintarvike', elintarvikeSchema)
-module.exports = Elintarvike*/
+const Elintarvike2 = mongoose.model('Elintarvike', elintarvikeSchema)
+module.exports = Elintarvike2

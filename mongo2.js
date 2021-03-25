@@ -25,7 +25,7 @@ const elintarvikeSchema = new mongoose.Schema({
   sugar: Number,
   salt: Number,
   ingredient_class: String,
-  special_diets: [{type: String}]
+  special_diets: [{ type: String }]
 
 })
 

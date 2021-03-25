@@ -4238,7 +4238,7 @@ const id_lista = [
     35647,
     35652,
     35887
-    
+
 ]
 
-module.exports =id_lista
+module.exports = id_lista

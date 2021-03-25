@@ -7,7 +7,7 @@ const id_lista = require('./api_idt') // lista, jossa Finelin Elintarvike2 id:t
 const Elintarvike2 = require('./mongo2') // eri tiedostossa oleva Elintarvike2-olion määrittely. Kuvaus, miten tietoa tallennetaan tietokantaan.
 const { count } = require('./mongo2') // ominaisuus
 const { fetchData } = require('./fetchFineli2')
-const {searchArrays} = require('./ingredientSearchWords')
+const { searchArrays } = require('./ingredientSearchWords')
 //fetchData()
 
 // käynnistä komennolla npm run dev, jotta päästään hyödyntämään nodemonia kehityksessä
@@ -49,6 +49,7 @@ app.get('/random', async (request, response) => {
 
 // tarkastaa ettei randomoidussa Elintarvike2listassa ole duplikaatteja
 function checkIfDuplicateExists(array) {
+    //console.log("IS DUPLICATES?", new Set(array.map(item => item["name_fi"])).size !== array.length)
     return new Set(array.map(item => item["name_fi"])).size !== array.length
     //return new Set(w).size !== w.length
 }
@@ -70,59 +71,54 @@ app.get('/howmany/:number', async (request, response) => {
 // hakee yhden elintarvikeclassin
 const getElintarvikkeetByIngredientClass = async (ingredientClass) => {
     let elinarvikkeetByIngredient = await Elintarvike2.find({ ingredient_class: ingredientClass })
-    //let elinarvikkeetByIngredient = await Elintarvike2.find({ ingredient_class: request.params.ingredientclass.toUpperCase() })
-    console.log("MONTAKO ELINTARVIKETTA LUOKASSA", elinarvikkeetByIngredient.length)
     return elinarvikkeetByIngredient
 }
 
-// palauttaa halutun määrän elintarvikkeita ingredientclassin mukaan TEE
+const getRandomValuesFromList = (listOfElintarvikes, number) => {
+    let sampleOfList = []
+    let usedIndexes = []
 
-app.get('/howmany/ingredient/:number/:ingredientclass', async (request, response) => {
-    //const meat = ["FISH", "FISHPROD", "SHELLFIS","INSECT","BEEF","PORK", "LAMM", "POULTRY","SAUSAGE", "SAUSCUTS","MEATCUTS","MEATPROD","GAME","OFFAL","EGG","EGGOTH"]
-    const hakusanalista = searchArrays[request.params.ingredientclass]
-    let all_ingredients= []
-        for(let i = 0; i < hakusanalista.length; i++) {
-            console.log("HAKIS arvo", hakusanalista[i])
-            let lisays = await getElintarvikkeetByIngredientClass(hakusanalista[i])
-            lisays.map(l => all_ingredients.push(l))
-    }
-
-    // TEE RANDOMOINTI !!!!!!!!!!
-    console.log("LISTAN PITUUS", all_ingredients.length)
-    //console.log("MEAT LENGHT", meat.length)
-    //console.log(all_ingredients)
-    response.json(all_ingredients)
-
-
-
-    /*console.log("montako", elinarvikkeetByIngredient.length)
-    let lista = []
-    for (let i = 0; i < request.params.number; i++) {
-        let elintarvike = elinarvikkeetByIngredient[Math.floor(Math.random() * elinarvikkeetByIngredient.length)]
-        if (!lista.includes(elintarvike)) {
-            lista.push(elintarvike)
+    for (let i = 0; i < number; i++) {
+        const randomIndex = (Math.random() * listOfElintarvikes.length).toFixed(0)
+        if (!usedIndexes.includes(randomIndex)) {
+            sampleOfList.push(listOfElintarvikes[randomIndex])
+            usedIndexes.push(randomIndex)
         } else {
             i--
         }
     }
-    console.log("MONTAKO PALAUTETAAN", lista.length)
-    response.json(lista)*/
+    return sampleOfList
+}
+
+// palauttaa halutun määrän elintarvikkeita koostetun ingredientclassin mukaan
+app.get('/howmany/ingredient/:number/:ingredientclass', async (request, response) => {
+    try {
+        const hakusanalista = searchArrays[request.params.ingredientclass]
+        let all_ingredients = []
+        for (let i = 0; i < hakusanalista.length; i++) {
+            let lisays = await getElintarvikkeetByIngredientClass(hakusanalista[i])
+            lisays.map(l => all_ingredients.push(l))
+        }
+        const amountOfIngredients = request.params.number
+        const finalList = getRandomValuesFromList(all_ingredients, amountOfIngredients)
+        response.json(finalList)
+    } catch (error) {
+        console.log("ERROR", error)
+
+    }
 })
 
 // palauttaa halutun määrän elintarvikkeita ruokavalion mukaan TEE
 app.get('/howmany/diet/:number/:specialdiet', async (request, response) => {
-    let elinarvikkeetByDiet = await Elintarvike2.find({ special_diets: request.params.ingredientclass.toUpperCase() })
-    console
-    try {
-        let is_duplicates = true
-        while (is_duplicates) {
-            cards = await Elintarvike2.aggregate([{ $sample: { size: parseInt(request.params.number) } }])
-            is_duplicates = checkIfDuplicateExists(cards)
-        }
-        response.json(cards)
-    } catch (error) {
-        console.log("ERROR", error)
+    let elinarvikkeetByDiet = await Elintarvike2.find({ special_diets: request.params.specialdiet.toUpperCase() })
+    const finalList = getRandomValuesFromList(elinarvikkeetByDiet, request.params.number)
+
+    console.log("PITUUS", finalList.length)
+
+    for(let i = 0; i < finalList.length; i++) {
+        console.log(finalList[i].name_fi)
     }
+    response.json(finalList)
 })
 
 const port = 3001

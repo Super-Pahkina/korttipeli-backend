@@ -5,7 +5,38 @@ const finelin_api_id_lista = require('./api_idt')
 const Elintarvike2 = require('./mongo2')
 const { count } = require('./mongo')
 
+
+const tarkastaOnkoPommikortti = (json_objekti) => {
+    if (json_objekti.energyKcal < 100 &&
+        json_objekti.fat < 4 &&
+        json_objekti.protein < 4 &&
+        json_objekti.carbohydrate < 20 &&
+        json_objekti.fiber < 1 &&
+        json_objekti.sugar < 4 &&
+        json_objekti.salt < 40) {
+        return true
+    }
+    return false
+}
+
+const tarkastaOnkoJokerikortti = (json_objekti) => {
+    if (json_objekti.energyKcal > 590 || 
+        json_objekti.fat > 80 ||
+        json_objekti.protein > 50 || 
+        json_objekti.carbohydrate >  75|| 
+        json_objekti.fiber > 15 || 
+        json_objekti.sugar > 80 ||
+        json_objekti.salt > 50000) { 
+        return true
+    }
+    return false
+}
+
 const makeElintarvikeAndSaveToDb = async (json_objekti) => {
+
+    const pommi = tarkastaOnkoPommikortti(json_objekti)
+    const jokeri = tarkastaOnkoJokerikortti(json_objekti)
+
     const elint = new Elintarvike2({
         name_fi: json_objekti.name.fi,
         api_id: json_objekti.id,
@@ -17,7 +48,10 @@ const makeElintarvikeAndSaveToDb = async (json_objekti) => {
         sugar: json_objekti.sugar,
         salt: json_objekti.salt,
         ingredient_class: json_objekti.ingredientClass.code,
-        special_diets: json_objekti.specialDiets
+        special_diets: json_objekti.specialDiets,
+        jokeri: jokeri,
+        pommi: pommi
+
     })
     try {
         await elint.save()
@@ -34,6 +68,7 @@ const fetchData = async () => {
             const json = await response.json()
 
             for (let ii = 0; ii < json.length; ii++) {
+
                 await makeElintarvikeAndSaveToDb(json[ii])
             }
         }

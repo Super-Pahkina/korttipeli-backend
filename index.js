@@ -8,7 +8,7 @@ const Elintarvike2 = require('./mongo2') // eri tiedostossa oleva Elintarvike2-o
 const { count } = require('./mongo2') // ominaisuus
 const { fetchData } = require('./fetchFineli2')
 const { searchArrays } = require('./ingredientSearchWords')
-//fetchData()
+fetchData()
 
 // käynnistä komennolla npm run dev, jotta päästään hyödyntämään nodemonia kehityksessä
 
@@ -121,6 +121,6 @@ app.get('/howmany/diet/:number/:specialdiet', async (request, response) => {
     response.json(finalList)
 })
 
-const port = 3001
+const port = 3002
 app.listen(port)
 console.log(`Server running on port ${port}`)

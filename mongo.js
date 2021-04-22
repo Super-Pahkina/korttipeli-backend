@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 // const password_file = require('./salasanat')
 ///const password = password_file.password
-const uri = process.env.MONGODB_URL;
+const uri = process.env.MONGODB_URI;
 
 //const url =
 //  `mongodb+srv://korttipeli:${password}@korttipeli.utv91.mongodb.net/elintarvikedata_laajennettu?retryWrites=true&w=majority`

@@ -8,6 +8,7 @@ const Elintarvike = require('./mongo')
 const { count } = require('./mongo')
 const { fetchData } = require('./fetchFineli')
 const { raakaAineidenHakusanalistat } = require('./raakaAineidenHakusanat')
+const { request } = require('express')
 // fetchData()
 // käynnistä komennolla npm run dev
 
@@ -35,6 +36,10 @@ const arvoListaltaSatunnaiset = (listaElintarvikkeista, numero) => {
     }
     return lista
 }
+
+app.get('/', (req, res) => {
+    res.send('<h1>Hello World!</h1>')
+  })
 
 app.get('/random', async (request, response) => {
     const random_int = Math.floor(Math.random() * await Elintarvike.collection.count())

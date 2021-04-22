@@ -1,11 +1,12 @@
 const mongoose = require('mongoose')
-const password_file = require('./salasanat')
-const password = password_file.password
+// const password_file = require('./salasanat')
+///const password = password_file.password
+const uri = process.env.MONGODB_uri;
 
-const url =
-  `mongodb+srv://korttipeli:${password}@korttipeli.utv91.mongodb.net/elintarvikedata_laajennettu?retryWrites=true&w=majority`
+//const url =
+//  `mongodb+srv://korttipeli:${password}@korttipeli.utv91.mongodb.net/elintarvikedata_laajennettu?retryWrites=true&w=majority`
 
-mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })
   .then(result => {
     console.log("connected to MongoDB")
   })

@@ -1,6 +1,6 @@
 
 // liha, kana ja kala, maitotuoteet ja muna, kasvikset, juomat, hedelmät, viljatuotteet
-const searchArrays = {
+const raakaAineidenHakusanalistat = {
     "meat": ["FISH", "FISHPROD", "SHELLFIS", "INSECT", "BEEF", "PORK", "LAMM", "POULTRY", "SAUSAGE", "SAUSCUTS", "MEATCUTS", "MEATPROD", "GAME", "OFFAL", "EGG", "EGGOTH"],
     "fruit": ["FRUITTOT", "APPLE", "CITRUS", "FRUITOTH", "BERRY"],
     "vegetable": ["VEGTOT", "VEGLEAF", "VEGFRU", "CABBAGE", "VEGONI", "ROOT", "MUSHRO", "LEGUTOT", "PEABEAN", "NUTSEED", "POTATOT", "POTATO"],
@@ -11,4 +11,4 @@ const searchArrays = {
     "sweet": ["FRUITCAN", "ICECREAM", "SDRINK", "SUGARSYR", "SWEET", "CHOCOLAT", "JAM"],
     "alcohol": ["ALCTOT", "BEER", "CIDER", "WINE", "SPIRIT", "ALCOTH"]
 }
-module.exports = { searchArrays }
+module.exports = { raakaAineidenHakusanalistat }

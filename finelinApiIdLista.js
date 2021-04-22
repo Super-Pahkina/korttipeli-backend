@@ -1,5 +1,4 @@
-// jokainen API:n id
-const id_lista = [
+const finelinApiIdLista = [
     1,
     2,
     3,
@@ -4241,4 +4240,4 @@ const id_lista = [
 
 ]
 
-module.exports = id_lista
+module.exports = finelinApiIdLista

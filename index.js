@@ -2,123 +2,87 @@ const express = require('express')
 const app = express()
 app.use(express.json())
 const cors = require('cors')
-app.use(cors()) // saadaan tarjottua dataa eri lokaatioissa toimiviin sovelluksiin
-const id_lista = require('./api_idt') // lista, jossa Finelin Elintarvike2 id:t
-const Elintarvike2 = require('./mongo2') // eri tiedostossa oleva Elintarvike2-olion määrittely. Kuvaus, miten tietoa tallennetaan tietokantaan.
-const { count } = require('./mongo2') // ominaisuus
-const { fetchData } = require('./fetchFineli2')
-const { searchArrays } = require('./ingredientSearchWords')
-fetchData()
+app.use(cors())
+const finelinApiIdLista = require('./finelinApiIdLista')
+const Elintarvike = require('./mongo')
+const { count } = require('./mongo')
+const { fetchData } = require('./fetchFineli')
+const { raakaAineidenHakusanalistat } = require('./raakaAineidenHakusanat')
+// fetchData()
+// käynnistä komennolla npm run dev
 
-// käynnistä komennolla npm run dev, jotta päästään hyödyntämään nodemonia kehityksessä
+function tarkastaOnkoDuplikaatteja(array) {
+    return new Set(array.map(item => item["name_fi"])).size !== array.length
+}
 
-// palauttaa kaikki elintarvikkeet (ei tarvita tällä hetkellä, poistetaan tai muutetaan asynciksi)
-app.get('/api/elintarvikkeet', (request, response) => {
-    Elintarvike2.find({}).then(elintarvikkeet => {
-        response.json(elintarvikkeet)
-    })
-})
+const haeElintarvikkeetRaakaAineenmukaan = async (ingredientClass) => {
+    let elinarvikkeetRaakaAineenMukaan = await Elintarvike.find({ ingredient_class: ingredientClass })
+    return elinarvikkeetRaakaAineenMukaan
+}
 
-// palauttaa Elintarvike2en, MongoDB-id:n perusteella (ei tarvita tällä hetkellä, poistetaan tai muutetaan asynciksi)
-app.get('/api/elintarvikkeet/:id', (request, response) => {
-    Elintarvike2.findById(request.params.id)
-        .then(elint => {
-            if (elint) {
-                response.json(elint)
-            } else {
-                response.status(404).end()
-            }
-        })
-        .catch(error => {
-            console.log(error)
-            response.status(500).end
-        })
-})
+const arvoListaltaSatunnaiset = (listaElintarvikkeista, numero) => {
+    let lista = []
+    let kaytetytIndeksit = []
 
-// palauttaa yhden sattumanvaraisen elintarvikkeen
+    for (let i = 0; i < numero; i++) {
+        const randomIndeksi = (Math.random() * listaElintarvikkeista.length).toFixed(0)
+        if (!kaytetytIndeksit.includes(randomIndeksi)) {
+            lista.push(listaElintarvikkeista[randomIndeksi])
+            kaytetytIndeksit.push(randomIndeksi)
+        } else {
+            i--
+        }
+    }
+    return lista
+}
+
 app.get('/random', async (request, response) => {
-    const random_int = Math.floor(Math.random() * await Elintarvike2.collection.count())
-    const haettava = id_lista[random_int]
+    const random_int = Math.floor(Math.random() * await Elintarvike.collection.count())
+    const haettava = finelinApiIdLista[random_int]
     try {
-        const elintarvike = await Elintarvike2.find({ "api_id": `${haettava}` })
+        const elintarvike = await Elintarvike.find({ "api_id": `${haettava}` })
         response.json(elintarvike)
     } catch (error) {
         console.log(error)
     }
 })
 
-// tarkastaa ettei randomoidussa Elintarvike2listassa ole duplikaatteja
-function checkIfDuplicateExists(array) {
-    //console.log("IS DUPLICATES?", new Set(array.map(item => item["name_fi"])).size !== array.length)
-    return new Set(array.map(item => item["name_fi"])).size !== array.length
-    //return new Set(w).size !== w.length
-}
-
-// palauttaa halutun määrän satunnaisia elintarvikkeita
+// lista satunnaisia elintarvikkeita
 app.get('/howmany/:number', async (request, response) => {
     try {
-        let is_duplicates = true
-        while (is_duplicates) {
-            cards = await Elintarvike2.aggregate([{ $sample: { size: parseInt(request.params.number) } }])
-            is_duplicates = checkIfDuplicateExists(cards)
+        let onkoDuplikaatteja = true
+        while (onkoDuplikaatteja) {
+            kortit = await Elintarvike.aggregate([{ $sample: { size: parseInt(request.params.number) } }])
+            onkoDuplikaatteja = tarkastaOnkoDuplikaatteja(kortit)
         }
-        response.json(cards)
+        response.json(kortit)
     } catch (error) {
         console.log("ERROR", error)
     }
 })
 
-// hakee yhden elintarvikeclassin
-const getElintarvikkeetByIngredientClass = async (ingredientClass) => {
-    let elinarvikkeetByIngredient = await Elintarvike2.find({ ingredient_class: ingredientClass })
-    return elinarvikkeetByIngredient
-}
-
-const getRandomValuesFromList = (listOfElintarvikes, number) => {
-    let sampleOfList = []
-    let usedIndexes = []
-
-    for (let i = 0; i < number; i++) {
-        const randomIndex = (Math.random() * listOfElintarvikes.length).toFixed(0)
-        if (!usedIndexes.includes(randomIndex)) {
-            sampleOfList.push(listOfElintarvikes[randomIndex])
-            usedIndexes.push(randomIndex)
-        } else {
-            i--
-        }
-    }
-    return sampleOfList
-}
-
-// palauttaa halutun määrän elintarvikkeita koostetun ingredientclassin mukaan
+// elintarvikkeet koostetun raaka-aineluokan mukaan
 app.get('/howmany/ingredient/:number/:ingredientclass', async (request, response) => {
     try {
-        const hakusanalista = searchArrays[request.params.ingredientclass]
-        let all_ingredients = []
+        const hakusanalista = raakaAineidenHakusanalistat[request.params.ingredientclass]
+        let kaikkiElintarvikkeet = []
         for (let i = 0; i < hakusanalista.length; i++) {
-            let lisays = await getElintarvikkeetByIngredientClass(hakusanalista[i])
-            lisays.map(l => all_ingredients.push(l))
+            let lisays = await haeElintarvikkeetRaakaAineenmukaan(hakusanalista[i])
+            lisays.map(lisattava => kaikkiElintarvikkeet.push(lisattava))
         }
-        const amountOfIngredients = request.params.number
-        const finalList = getRandomValuesFromList(all_ingredients, amountOfIngredients)
-        response.json(finalList)
+        const raakaAineidenMaara = request.params.number
+        const lopullinenLista = arvoListaltaSatunnaiset(kaikkiElintarvikkeet, raakaAineidenMaara)
+        response.json(lopullinenLista)
     } catch (error) {
         console.log("ERROR", error)
-
     }
 })
 
-// palauttaa halutun määrän elintarvikkeita ruokavalion mukaan TEE
+// elintarvikkeet ruokavalion mukaan
 app.get('/howmany/diet/:number/:specialdiet', async (request, response) => {
-    let elinarvikkeetByDiet = await Elintarvike2.find({ special_diets: request.params.specialdiet.toUpperCase() })
-    const finalList = getRandomValuesFromList(elinarvikkeetByDiet, request.params.number)
-
-    console.log("PITUUS", finalList.length)
-
-    for(let i = 0; i < finalList.length; i++) {
-        console.log(finalList[i].name_fi)
-    }
-    response.json(finalList)
+    let elinarvikkeetRuokavalionMukaan = await Elintarvike.find({ special_diets: request.params.specialdiet.toUpperCase() })
+    const lopullinenLista = arvoListaltaSatunnaiset(elinarvikkeetRuokavalionMukaan, request.params.number)
+    response.json(lopullinenLista)
 })
 
 const port = 3002

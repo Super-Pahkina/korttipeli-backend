@@ -11,6 +11,7 @@ const { raakaAineidenHakusanalistat } = require('./raakaAineidenHakusanat')
 const { request } = require('express')
 // fetchData()
 // käynnistä komennolla npm run dev
+const path = require('path')
 
 function tarkastaOnkoDuplikaatteja(array) {
     return new Set(array.map(item => item["name_fi"])).size !== array.length
@@ -37,46 +38,9 @@ const arvoListaltaSatunnaiset = (listaElintarvikkeista, numero) => {
     return lista
 }
 
-app.get('/', (req, res) => {
-    res.send(
-        
-        '<h1>REST API</h1>',
-        '<h3>https://elintarvikepeli.herokuapp.com</h3>',
-
-        '<p>Hae satunnainen elintarvike: </p>',
-        '<h3>/random</h3>',
-
-        '<p>Hae tietty määrä satunnaisia elintarvikkeita:</p>',
-        '<h3>/howmany/{lukumäärä}</h3>',
-
-        '<p>Hae tietty määrä satunnaisia elintarvikkeita tietyn elintarvikekategorian perusteella.</p>',
-        '<h4>Elintarvikekategoriat: </h4>',
-        '<ul>',
-        '<li>meat</li>',
-        '<li>fruit</li>',
-        '<li>vegetable</li>',
-        '   <li>dairy</li>',
-        '   <li>grain</li>',
-        '   <li>dish</li>',
-        '   <li>drink</li>',
-        '   <li>sweet</li>',
-        '   <li>alcohol</li>',
-           '</ul>',
-            '<h3>/howmany/ingredient/{lukumäärä}/{elintarvikekategoria}</h3>',
-
-            '<p>Hae tietty määrä satunnaisia elintarvikkeita tietyn erikoisruokavalion perusteella:</p>',
-            '<h4>Erikoisruokavaliot:</h4>',
-            '<ul>',
-            '<li>CHOLFREE (kolesteroliton)</li>',
-            '<li>GLUTFREE (gluteeniton)</li>',
-            '<li>HIGHFIBR (runsaskuituinen)</li>',
-            '<li>LACSFREE (laktoositon)</li>',
-            '<li>LACOVEGE (lakto-ovovegetaarinen)</li>',
-            '<li>LOWFAT (vähärasvainen)</li>',
-            '<li>VEGAN (vegaaninen)</li>',
-            '</ul>',
-        '<h3>/howmany/diet/{lukumäärä}/{erikoisruokavalio}</h3>'
-    )
+app.get('/', (request, response) => {
+    //res.send()
+    response.sendFile(path.join(__dirname + '/restApiEtusivu.html'))
 })
 
 app.get('/random', async (request, response) => {

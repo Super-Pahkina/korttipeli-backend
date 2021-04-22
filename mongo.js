@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
-// const password_file = require('./salasanat')
-///const password = password_file.password
+//const password_file = require('./salasanat')
+//const password = password_file.password
 const uri = process.env.MONGODB_URI;
 
 //const url =

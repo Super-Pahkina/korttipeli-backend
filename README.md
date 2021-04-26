@@ -43,7 +43,11 @@ Kommentoi tiedostossa mongo.js rivi 4 pois, ja ota rivit 2, 3, 6 ja 7 käyttöö
 
 Kutsu tiedostossa index.js funktiota fetchFineli() tallentaaksesi tietokantaasi dataa Finelin avoimesta datasta.
 
-Projekti käynnistyy komennolla `npm run dev`.
+Projekti käynnistyy komennolla 
+
+```
+$ npm run dev
+```
 
 ---------------
 Backendia käyttävä mobiilisovellus ja sen tarkempi dokumentaatio löytyvät osoitteesta

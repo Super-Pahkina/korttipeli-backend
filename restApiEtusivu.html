@@ -10,42 +10,78 @@
 </head>
 <body>
      <h1>REST API</h1>  
-     <p>Osoitteen alkuosa:</p>
+     <h2>Osoitteen alkuosa:</h2>
      <h3>https://elintarvikepeli.herokuapp.com</h3>  
 
-     <p>Hae satunnainen elintarvike: </p>  
-     <h3>/random</h3>  
+     <h2>Hae satunnainen elintarvike: </h2>  
+     <h3>/random</h3> 
+     <p>Esimerkkihaku:</p>
+     <p>https://elintarvikepeli.herokuapp.com/random</p>
+     <p>
+       <pre class="tab">
+      [
+        {
+        special_diets: [
+          "SOYAFREE",
+          "UNSWEET",
+          "LACOVEGE"
+        ],
+        _id: "607823006bb726d39437724b",
+        name_fi: "Muna-riisipasteija, voitaikina",
+        api_id: 31796,
+        energyKcal: 327.37626831706956,
+        fat: 24.0426846171696,
+        protein: 5.38158841521059,
+        carbohydrate: 22.4257026160028,
+        fiber: 1.0036822433817,
+        sugar: 0.464532431403689,
+        salt: 803.503466784459,
+        ingredient_class: "DISH",
+        jokeri: false,
+        pommi: false,
+        __v: 0
+        }
+      ]
+    </pre>
+    </p>
+    
 
-     <p>Hae tietty määrä satunnaisia elintarvikkeita:</p>  
-     <h3>/howmany/{lukumäärä}</h3>  
+     <h2>Hae tietty määrä satunnaisia elintarvikkeita:</h2>  
+     <h3>/howmany/{lukumäärä}</h3> 
+     <p>Esimerkkihaku:</p>
+     <p>https://elintarvikepeli.herokuapp.com/howmany/12</p>
 
-     <p>Hae tietty määrä satunnaisia elintarvikkeita tietyn elintarvikekategorian perusteella.</p>  
+     <h2>Hae tietty määrä satunnaisia elintarvikkeita tietyn elintarvikekategorian perusteella.</h2>  
      <h4>Elintarvikekategoriat: </h4>  
      <ul>  
-     <li>meat</li>  
-     <li>fruit</li>  
-     <li>vegetable</li>  
+        <li>meat</li>  
+        <li>fruit</li>  
+        <li>vegetable</li>  
         <li>dairy</li>  
         <li>grain</li>  
         <li>dish</li>  
         <li>drink</li>  
         <li>sweet</li>  
         <li>alcohol</li>  
-        </ul>  
-         <h3>/howmany/ingredient/{lukumäärä}/{elintarvikekategoria}</h3>  
+      </ul>  
+      <h3>/howmany/ingredient/{lukumäärä}/{elintarvikekategoria}</h3> 
+      <p>Esimerkkihaku:</p>
+      <p>https://elintarvikepeli.herokuapp.com/howmany/ingredient/25/meat</p>
 
-         <p>Hae tietty määrä satunnaisia elintarvikkeita tietyn erikoisruokavalion perusteella:</p>  
-         <h4>Erikoisruokavaliot:</h4>  
-         <ul>  
-         <li>CHOLFREE (kolesteroliton)</li>  
-         <li>GLUTFREE (gluteeniton)</li>  
-         <li>HIGHFIBR (runsaskuituinen)</li>  
-         <li>LACSFREE (laktoositon)</li>  
-         <li>LACOVEGE (lakto-ovovegetaarinen)</li>  
-         <li>LOWFAT (vähärasvainen)</li>  
-         <li>VEGAN (vegaaninen)</li>  
-         </ul>  
-     <h3>/howmany/diet/{lukumäärä}/{erikoisruokavalio}</h3> 
+      <h2>Hae tietty määrä satunnaisia elintarvikkeita tietyn erikoisruokavalion perusteella:</h2>  
+      <h4>Erikoisruokavaliot:</h4>  
+      <ul>  
+        <li>CHOLFREE (kolesteroliton)</li>  
+        <li>GLUTFREE (gluteeniton)</li>  
+        <li>HIGHFIBR (runsaskuituinen)</li>  
+        <li>LACSFREE (laktoositon)</li>  
+        <li>LACOVEGE (lakto-ovovegetaarinen)</li>  
+        <li>LOWFAT (vähärasvainen)</li>  
+        <li>VEGAN (vegaaninen)</li>  
+      </ul>  
+      <h3>/howmany/diet/{lukumäärä}/{erikoisruokavalio}</h3> 
+      <p>Esimerkkihaku:</p>
+      <p>https://elintarvikepeli.herokuapp.com/howmany/diet/5/vegan</p>
   
 </body>
 </html>

@@ -9,7 +9,7 @@ const { count } = require('./mongo')
 const { fetchData } = require('./fetchFineli')
 const { raakaAineidenHakusanalistat } = require('./raakaAineidenHakusanat')
 const { request } = require('express')
-// fetchData()
+//fetchData()
 // käynnistä komennolla npm run dev
 const path = require('path')
 

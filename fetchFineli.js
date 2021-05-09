@@ -7,13 +7,14 @@ const { count } = require('./mongo')
 
 
 const tarkastaOnkoPommikortti = (json_objekti) => {
-    if (json_objekti.energyKcal < 100 &&
-        json_objekti.fat < 4 &&
-        json_objekti.protein < 4 &&
-        json_objekti.carbohydrate < 20 &&
-        json_objekti.fiber < 1 &&
-        json_objekti.sugar < 4 &&
-        json_objekti.salt < 40) {
+
+    if (json_objekti.energyKcal < 180 &&
+        json_objekti.fat < 3 &&
+        json_objekti.protein < 13 &&
+        json_objekti.carbohydrate < 24 &&
+        json_objekti.fiber < 1.4 &&
+        json_objekti.sugar < 1.3 &&
+        json_objekti.salt < 830) {
         return true
     }
     return false

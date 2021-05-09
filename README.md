@@ -23,10 +23,10 @@ Tarvitset projektin paikallista käyttöä varten sovelluskehitysympäristön, e
 
 Kloonaa projekti ja asenna riippuvuudet komennoilla 
 
-```
-$ git clone https://github.com/Super-Pahkina/korttipeli-backend.git
-$ npm install
-```
+
+    $ git clone https://github.com/Super-Pahkina/korttipeli-backend.git
+    $ npm install
+
 
 
 Projektin toimimiseksi tarvitset tilin MongoDB Atlasiin, ja sinun täytyy [luoda uusi clusteri](https://docs.atlas.mongodb.com/tutorial/create-new-cluster/) datan tallentamiseksi.
@@ -35,19 +35,19 @@ Luo tiedosto salasanat.js projektin juureen, johon tallennat salasanan ja käytt
 
 Tiedoston tulisi näyttää tältä:
 
-![vaihda salasana](/pictures/salasanatiedosto.png)
+![vaihda salasana](pictures/salasanatiedosto.png)
 
 Kommentoi tiedostossa mongo.js rivi 4 pois, ja ota rivit 2, 3, 6 ja 7 käyttöön.
 
-![vaihda salasana](/pictures/password.png)
+![vaihda salasana](pictures/password.png)
 
 Kutsu tiedostossa index.js funktiota fetchFineli() tallentaaksesi tietokantaasi dataa Finelin avoimesta datasta.
 
 Projekti käynnistyy komennolla 
 
-```
-$ npm run dev
-```
+
+    $ npm run dev
+
 
 ---------------
 Backendia käyttävä mobiilisovellus ja sen tarkempi dokumentaatio löytyvät osoitteesta

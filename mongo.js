@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 //const password = password_file.password
 const uri = process.env.MONGODB_URI;
 
-//const url =
+//const uri =
 //  `mongodb+srv://korttipeli:${password}@korttipeli.utv91.mongodb.net/elintarvikedata_laajennettu?retryWrites=true&w=majority`
 
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false, useCreateIndex: true })

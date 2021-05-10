@@ -61,3 +61,9 @@ https://github.com/Super-Pahkina/korttipeli.
 - Valtteri Korhonen
 - Ville Koski
 - Kristiina Kumila
+
+### Lisenssi
+[MIT](https://choosealicense.com/licenses/mit/)
+
+Finelin data:
+[CC-BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.fi)
